@@ -22,7 +22,7 @@ app.use('/api/v1',transactionsRouter)
 app.use(notFound)
 app.use(errorHandler)
 
-const port = 3000 || process.env.PORT
+const port = 5000 || process.env.PORT
 
 const start = async()=>{
     try {
