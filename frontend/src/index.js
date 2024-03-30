@@ -6,7 +6,7 @@ import Income from "./components/income/Income"
 ReactDOM.render(
   <React.StrictMode>
     <App />
-    {/* <Income/> */}
+    <Income/>
   </React.StrictMode>,
   document.getElementById("root")
 )
