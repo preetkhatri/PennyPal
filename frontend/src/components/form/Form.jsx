@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from "axios";
 import "./form.css"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -13,18 +14,44 @@ export default function Form() {
         description: "",
     });
 
-    const [category, setCategory] = React.useState("");
+    const [category, setCategory] = React.useState("stipend");
+
+    function saveData() {
+        const data = {
+            ...formdata,
+            category: category
+        };
+        console.log(data);
+        axios.post("http://localhost:5000/api/v1/add-expense", data)
+            .then((res) => {
+                console.log("sent");
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+
 
     function handleChange(event) {
-        if (event.target.name === "amount") {
-            event.target.value = event.target.value > 0 ? event.target.value : 0;
+        let name, value;
+        if (event.target) {
+            name = event.target.name;
+            value = event.target.value;
+            if (name === "amount") {
+                value = value > 0 ? value : 0;
+            }
+        } else {
+            name = "date";
+            value = event;
         }
-        setFormdata((prevdata) => {
-            return {
-                ...prevdata,
-                [event.target.name]: event.target.value
-            };
-        });
+
+        setFormdata(prevdata => ({
+            ...prevdata,
+            [name]: value
+        }));
+        console.log(formdata);
+        console.log("hi");
+        console.log(category);
     }
 
     return (
@@ -32,8 +59,9 @@ export default function Form() {
             <div className="form-div">
                 <div className="form-entries">
                     <form
-                        onClick={(e) => {
+                        onSubmit={(e) => {
                             e.preventDefault();
+                            saveData();
                         }}>
                         <div className="input-div" id="firstInputDiv">
                             <input
@@ -57,11 +85,12 @@ export default function Form() {
                         </div>
                         <div className="input-div">
                             <DatePicker
-                                id='date'
-                                placeholderText='Enter A Date'
-                                selected={formdata.date}
-                                dateFormat="yyyy/MM/dd"
-                                onChange={handleChange} />
+                                name="date"
+                                selected={formdata.date ? new Date(formdata.date) : null} // Set selected prop
+                                placeholderText="Enter A Date"
+                                dateFormat="dd/MM/yyyy"
+                                onChange={(date) => handleChange({ target: { name: "date", value: date } })}
+                            />
                         </div>
                         <div className="input-div">
                             <select

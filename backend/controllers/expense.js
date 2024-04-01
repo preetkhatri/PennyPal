@@ -7,10 +7,10 @@ const addExpense = asyncWrapper(async (req, res) => {
     const expense = ExpenseSchema({ title, amount, date, category, description })
 
     if (!title || !amount || !category || !description || !date) {
-        return next(createCustomError(`All fields are required`, 400))
+        (createCustomError(`All fields are required`, 400))
     }
     if (amount < 0 || !amount === 'Number') {
-        next(createCustomError(`Amount must be positive`, 400))
+        (createCustomError(`Amount must be positive`, 400))
     }
 
     const expenseAdd = await ExpenseSchema.create(expense);

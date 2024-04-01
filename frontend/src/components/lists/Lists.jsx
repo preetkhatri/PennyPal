@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./lists.css";
+import axios from "axios";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -9,10 +10,26 @@ import ShowChartIcon from '@mui/icons-material/ShowChart';
 import lifts from "./listsData";
 
 const Lists = () => {
+
+    const [data, setData] = React.useState([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get("http://localhost:5000/api/v1/get-expenses");
+                setData(response.data)
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchData();
+    }, []);
+    console.log(data);
+
     return (
         <>
             {
-                lifts.map((key) => {
+                data.map((key) => {
                     return (
                         <div className="list-div">
                             <div className="icon-div">
@@ -38,7 +55,7 @@ const Lists = () => {
                                             <span style={{ marginLeft: "5px" }}>{key.description}</span>
                                         </div>
                                     </div>
-                                    <div className="delete-icon-div" style={{padding:"5px"}}>
+                                    <div className="delete-icon-div" style={{ padding: "5px" }}>
                                         <DeleteIcon className="form-icons" />
                                     </div>
                                 </div>
