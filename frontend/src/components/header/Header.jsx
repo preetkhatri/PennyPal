@@ -10,30 +10,38 @@ import CloseIcon from "@mui/icons-material/Close"
 import { Link } from "react-router-dom";
 
 const Header = ({ dark, setMode }) => {
-  // Toogle Menu
-  const [Mobile, setMobile] = useState(false)
+  const [Mobile, setMobile] = useState(false);
+  const [activeLink, setActiveLink] = useState("");
+
+  const handleLinkClick = (link) => {
+    setActiveLink(link);
+  }
+
+  let currentPath = window.location.pathname
+
   return (
+
     <>
       <section className='header'>
         <Head dark={dark} setMode={setMode} />
         <header>
           <div className='container'>
             <ul className={Mobile ? "navMenu-list" : "link"} onClick={() => setMobile(false)}>
-              <li>
+              <li onClick={() => handleLinkClick(currentPath)}>
                 <Link to="/">
-                  <DashboardOutlinedIcon className='navIcon active' />
+                  <DashboardOutlinedIcon className={`navIcon + ${activeLink === '/' ? "active" : ""}`} />
                   Dashboard
                 </Link>
               </li>
-              <li>
+              <li onClick={() => handleLinkClick(currentPath)}>
                 <Link to="/incomes">
-                  <CurrencyRupeeIcon className='navIcon' />
+                  <CurrencyRupeeIcon className={`navIcon + ${activeLink === '/incomes' ? "active" : ""}`} />
                   Incomes
                 </Link>
               </li>
-              <li>
+              <li onClick={() => handleLinkClick(currentPath)}>
                 <Link to="/expenses">
-                  <PaymentsIcon className='navIcon' />
+                  <PaymentsIcon className={`navIcon + ${activeLink === '/expenses' ? "active" : ""}`} />
                   Expenses
                 </Link>
               </li>

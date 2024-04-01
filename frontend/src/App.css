@@ -26,14 +26,12 @@ body {
   object-fit: cover;
   border-radius: 50%;
 }
-/* button,
-input {
+.toggle {
   background: none;
   border: none;
   outline: none;
   cursor: pointer;
-  color: #fff;
-} */
+}
 .right button {
   background: none;
   border: none;
