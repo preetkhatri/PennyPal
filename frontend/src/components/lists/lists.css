@@ -30,3 +30,12 @@
 .description-div {
     margin: 0 13px;
 }
+.light .list-div {
+    background-color: white;
+}
+.dark .icon-div {
+    color: white;
+}
+.dark .details-div {
+    color: white;
+}

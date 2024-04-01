@@ -7,6 +7,7 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import MenuIcon from "@mui/icons-material/Menu"
 import CloseIcon from "@mui/icons-material/Close"
+import { Link } from "react-router-dom";
 
 const Header = ({ dark, setMode }) => {
   // Toogle Menu
@@ -19,18 +20,22 @@ const Header = ({ dark, setMode }) => {
           <div className='container'>
             <ul className={Mobile ? "navMenu-list" : "link"} onClick={() => setMobile(false)}>
               <li>
-                <a href='/' className='navIcon'>
+                <Link to="/">
                   <DashboardOutlinedIcon className='navIcon active' />
                   Dashboard
-                </a>
+                </Link>
               </li>
               <li>
-                <CurrencyRupeeIcon className='navIcon' />
-                <a href='/'>Income</a>
+                <Link to="/incomes">
+                  <CurrencyRupeeIcon className='navIcon' />
+                  Incomes
+                </Link>
               </li>
               <li>
-                <PaymentsIcon className='navIcon' />
-                <a href='/'>Expenses</a>
+                <Link to="/expenses">
+                  <PaymentsIcon className='navIcon' />
+                  Expenses
+                </Link>
               </li>
               <li>
                 <CurrencyExchangeIcon className='navIcon' />

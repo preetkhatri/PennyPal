@@ -1,9 +1,9 @@
-.income-parent-div {
+.expense-parent-div {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
-.total-income-div{
+.total-expense-div{
     border-radius: 5px;
     margin: 5px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -13,13 +13,13 @@
     justify-content: center;
     align-items: center;
 }
-.income-details-div {
+.expense-details-div {
     display: flex;
     justify-content: space-around;
 }
-.light .total-income-div {
+.light .total-expense-div {
     background-color: white;
 }
-.dark .total-income-div {
+.dark .total-expense-div {
     color: white;
 }

@@ -1,24 +1,20 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css"
-import Footer from "./components/footer/Footer"
-import Header from "./components/header/Header"
-import Home from "./components/home/Home"
+import Dashboard from "./components/dashboard/Dashboard"
+import Income from "./components/income/Income"
+import Expense from "./components/expense/Expense";
 
 function App() {
-  const getMode = () => {
-    return JSON.parse(localStorage.getItem("mode"))
-  }
-  const [dark, setMode] = useState(getMode())
-  useEffect(() => {
-    localStorage.setItem("mode", JSON.stringify(dark))
-  }, [dark])
   return (
     <>
-      <div className={dark ? "dark" : "light"}>
-        <Header dark={dark} setMode={setMode} />
-        <Home />
-        <Footer />
-      </div>
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" element={<Dashboard />} />
+          <Route exact path="/incomes" element={<Income />} />
+          <Route exact path="/expenses" element={<Expense/>}/>
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }

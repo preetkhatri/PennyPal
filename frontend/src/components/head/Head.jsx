@@ -11,7 +11,7 @@ const Head = ({ dark, setMode }) => {
           <div className='left'>
             {/* Logo add krna hai baadme */}
             <div className='logo'>
-              <img src='../../../public/assets/images/test.jpg' alt='Not Found' />
+              <img src='./test.jpg' alt='!found' />
             </div>
           </div>
           <div className='right flexCenter'>
