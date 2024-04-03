@@ -23,3 +23,7 @@
 .dark .total-income-div {
     color: white;
 }
+#currencyIcon {
+    margin-right: -3px;
+    margin-bottom: -5px;
+}

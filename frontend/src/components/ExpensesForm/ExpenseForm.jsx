@@ -1,10 +1,10 @@
 import React from "react";
 import axios from "axios";
-import "./form.css"
+import "./ExpenseForm.css"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function Form() {
+export default function ExpenseForm() {
 
     const [formdata, setFormdata] = React.useState({
         title: "",
@@ -22,7 +22,7 @@ export default function Form() {
             category: category
         };
         console.log(data);
-        axios.post("http://localhost:5000/api/v1/add-income", data)
+        axios.post("http://localhost:5000/api/v1/add-expense", data)
             .then((res) => {
                 console.log("sent");
             })
@@ -42,6 +42,7 @@ export default function Form() {
             }
         } else {
             name = "date";
+            value = value.split(" ");
             value = event;
         }
 
@@ -117,7 +118,7 @@ export default function Form() {
                             />
                         </div>
                         <div className="btn-div" id="btn-div">
-                            <button class="button62">Add Income</button>
+                            <button class="button62">Add Expense</button>
                         </div>
                     </form>
                 </div>

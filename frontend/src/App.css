@@ -118,6 +118,9 @@ li {
 .dark {
   background-color: #282e38;
 }
+.delete-icon-div {
+  cursor: pointer;
+}
 /*-------------light-mode---------------------*/
 .light {
   background-color: #ebeff2;

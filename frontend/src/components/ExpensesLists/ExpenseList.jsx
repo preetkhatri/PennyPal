@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import "./lists.css";
+import "./ExpenseList.css";
 import axios from "axios";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
@@ -8,12 +8,12 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
 
-const Lists = () => {
+const ExpenseList = () => {
 
     const [data, setData] = React.useState([]);
     const fetchData = async () => {
         try {
-            const response = await axios.get("http://localhost:5000/api/v1/get-incomes");
+            const response = await axios.get("http://localhost:5000/api/v1/get-expenses");
             setData(response.data)
         } catch (error) {
             console.log(error);
@@ -27,7 +27,7 @@ const Lists = () => {
     console.log(data);
 
     const deleteExpense = async (id) => {
-        await axios.delete(`http://localhost:5000/api/v1/delete-income/${id}`)
+        await axios.delete(`http://localhost:5000/api/v1/delete-expense/${id}`)
         fetchData();
     }
 
@@ -74,4 +74,4 @@ const Lists = () => {
     )
 }
 
-export default Lists
+export default ExpenseList

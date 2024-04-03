@@ -1,47 +1,46 @@
-import React, { useState } from "react"
-import "./header.css"
-import Head from "../head/Head"
-import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined"
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import "./header.css";
+import Head from "../head/Head";
+import DashboardOutlinedIcon from "@mui/icons-material/DashboardOutlined";
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
-import MenuIcon from "@mui/icons-material/Menu"
-import CloseIcon from "@mui/icons-material/Close"
-import { Link } from "react-router-dom";
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
 
 const Header = ({ dark, setMode }) => {
-  const [Mobile, setMobile] = useState(false);
+  const [mobile, setMobile] = useState(false);
   const [activeLink, setActiveLink] = useState("");
+
+  const location = useLocation();
 
   const handleLinkClick = (link) => {
     setActiveLink(link);
   }
 
-  let currentPath = window.location.pathname
-
   return (
-
     <>
       <section className='header'>
         <Head dark={dark} setMode={setMode} />
         <header>
           <div className='container'>
-            <ul className={Mobile ? "navMenu-list" : "link"} onClick={() => setMobile(false)}>
-              <li onClick={() => handleLinkClick(currentPath)}>
+            <ul className={mobile ? "navMenu-list" : "link"} onClick={() => setMobile(false)}>
+              <li onClick={() => handleLinkClick("/")}>
                 <Link to="/">
-                  <DashboardOutlinedIcon className={`navIcon + ${activeLink === '/' ? "active" : ""}`} />
+                  <DashboardOutlinedIcon className={`navIcon ${location.pathname === '/' ? "active" : ""}`} />
                   Dashboard
                 </Link>
               </li>
-              <li onClick={() => handleLinkClick(currentPath)}>
+              <li onClick={() => handleLinkClick("/incomes")}>
                 <Link to="/incomes">
-                  <CurrencyRupeeIcon className={`navIcon + ${activeLink === '/incomes' ? "active" : ""}`} />
+                  <CurrencyRupeeIcon className={`navIcon ${location.pathname === '/incomes' ? "active" : ""}`} />
                   Incomes
                 </Link>
               </li>
-              <li onClick={() => handleLinkClick(currentPath)}>
+              <li onClick={() => handleLinkClick("/expenses")}>
                 <Link to="/expenses">
-                  <PaymentsIcon className={`navIcon + ${activeLink === '/expenses' ? "active" : ""}`} />
+                  <PaymentsIcon className={`navIcon ${location.pathname === '/expenses' ? "active" : ""}`} />
                   Expenses
                 </Link>
               </li>
@@ -50,8 +49,8 @@ const Header = ({ dark, setMode }) => {
                 <a href='/'>Transactions</a>
               </li>
             </ul>
-            <button className='toggle' onClick={() => setMobile(!Mobile)}>
-              {Mobile ? <CloseIcon /> : <MenuIcon />}
+            <button className='toggle' onClick={() => setMobile(!mobile)}>
+              {mobile ? <CloseIcon /> : <MenuIcon />}
             </button>
           </div>
         </header>
@@ -60,4 +59,4 @@ const Header = ({ dark, setMode }) => {
   )
 }
 
-export default Header
+export default Header;
