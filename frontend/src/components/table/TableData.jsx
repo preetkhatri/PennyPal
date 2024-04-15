@@ -1,7 +1,7 @@
-import React from "react"
+import React, { useEffect } from "react"
 import "./Table.css"
+import axios from "axios"
 import Common from "../../common/Common"
-import rows from "../users/rowsData"
 import "../users/users.css"
 import Table from "@mui/material/Table"
 import TableBody from "@mui/material/TableBody"
@@ -14,6 +14,31 @@ import Paper from "@mui/material/Paper"
 
 
 const TableData = () => {
+
+  const [transactions, setTransactions] = React.useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const expenseResponse = await axios.get("http://localhost:5000/api/v1/get-expenses");
+        const expenses = expenseResponse.data.map(e => ({ ...e, type: "expense" }));
+
+        const incomeResponse = await axios.get("http://localhost:5000/api/v1/get-incomes");
+        const incomes = incomeResponse.data.map(e => ({ ...e, type: "income" }));
+
+        const allTransactions = [...expenses, ...incomes];
+
+        allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        const recentTxns = allTransactions.slice(0, 5);
+        setTransactions(recentTxns);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchData();
+  }, [])
+
   return (
     <>
       <section className='project'>
@@ -44,16 +69,16 @@ const TableData = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {rows.map((row) => (
-                    <TableRow key={row.id}>
+                  {transactions.map((transaction, index) => (
+                    <TableRow key={index}>
                       <TableCell component='th' scope='row'>
-                        {row.id}
+                        {index + 1}
                       </TableCell>
-                      <TableCell>{row.title}</TableCell>
-                      <TableCell>{row.amount}</TableCell>
-                      <TableCell>{row.date}</TableCell>
-                      <TableCell className='status'>{row.category}</TableCell>
-                      <TableCell>{row.description}</TableCell>
+                      <TableCell>{transaction.title}</TableCell>
+                      <TableCell>{transaction.amount}</TableCell>
+                      <TableCell>{transaction.date.slice(0,10)}</TableCell>
+                      <TableCell className='status'>{transaction.category}</TableCell>
+                      <TableCell>{transaction.type}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

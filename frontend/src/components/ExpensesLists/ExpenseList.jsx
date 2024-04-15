@@ -54,7 +54,7 @@ const ExpenseList = () => {
                                         </div>
                                         <div className="date-div" style={{ display: "flex" }}>
                                             <CalendarMonthIcon className="form-icons" />
-                                            <span style={{ marginLeft: "5px" }}>{key.date}</span>
+                                            <span style={{ marginLeft: "5px" }}>{key.date.slice(0, 10)}</span>
                                         </div>
                                         <div className="description-div" style={{ display: "flex" }}>
                                             <ChatBubbleIcon className="form-icons" />
