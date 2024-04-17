@@ -3,7 +3,7 @@ import Header from "../header/Header";
 import Home from "../home/Home";
 import Footer from "../footer/Footer";
 
-function Dashboard() {
+const Dashboard = () => {
     const getMode = () => {
         return JSON.parse(localStorage.getItem("mode"))
     }

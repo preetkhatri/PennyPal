@@ -36,14 +36,38 @@ const updateExpense = asyncWrapper(async (req, res) => {
     const updExpense = await ExpenseSchema.findOneAndUpdate(
         { _id: id },
         req.body,
-        {new:true}
+        { new: true }
     )
-    res.status(200).json({updExpense})
+    if (!updExpense) {
+        return next(createCustomError(`No expense with id ${id}`, 404))
+    }
+    res.status(200).json({ updExpense })
+})
+
+const getExpenseByYear = asyncWrapper(async (req, res) => {
+    const { year } = req.query;
+    console.log(req.query);
+
+    const startDate = new Date(year, 0, 1);
+    const endDate = new Date(year, 11, 31, 23, 59, 59); 
+
+    const expenses = await ExpenseSchema.find({
+        date: { $gte: startDate, $lte: endDate }
+    }).sort({date: 1});
+
+    if (expenses.length === 0) {
+        return res.status(200).json({});
+    }
+
+    expenses.sort((a, b) => a.date - b.date);
+
+    res.status(200).json(expenses);
 })
 
 module.exports = {
     addExpense,
     getExpenses,
     deleteExpense,
-    updateExpense
+    updateExpense,
+    getExpenseByYear
 }

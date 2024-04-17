@@ -44,9 +44,30 @@ const updateIncome = asyncWrapper(async (req, res) => {
     res.status(200).json({ updIncome })
 })
 
+const incomeByYear = asyncWrapper(async (req, res) => {
+    const { year } = req.query;
+    console.log(req.query);
+
+    const startDate = new Date(year, 0, 1);
+    const endDate = new Date(year, 11, 31, 23, 59, 59); 
+
+    const incomes = await IncomeSchema.find({
+        date: { $gte: startDate, $lte: endDate }
+    }).sort({date: 1});
+
+    if (incomes.length === 0) {
+        return res.status(200).json({});
+    }
+
+    incomes.sort((a, b) => a.date - b.date);
+
+    res.status(200).json(incomes);
+})
+
 module.exports = {
     addIncome,
     getIncomes,
     deleteIncome,
-    updateIncome
+    updateIncome,
+    incomeByYear
 }
