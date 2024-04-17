@@ -49,7 +49,7 @@ const getExpenseByYear = asyncWrapper(async (req, res) => {
     console.log(req.query);
 
     const startDate = new Date(year, 0, 1);
-    const endDate = new Date(year, 11, 31, 23, 59, 59); 
+    const endDate = new Date(year, 1, 31, 23, 59, 59); 
 
     const expenses = await ExpenseSchema.find({
         date: { $gte: startDate, $lte: endDate }
@@ -58,8 +58,6 @@ const getExpenseByYear = asyncWrapper(async (req, res) => {
     if (expenses.length === 0) {
         return res.status(200).json({});
     }
-
-    expenses.sort((a, b) => a.date - b.date);
 
     res.status(200).json(expenses);
 })
