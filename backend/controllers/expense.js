@@ -25,14 +25,25 @@ const getExpenses = asyncWrapper(async (req, res) => {
 const deleteExpense = asyncWrapper(async (req, res) => {
     const { id } = req.params;
     const delExpense = await ExpenseSchema.findOneAndDelete({ _id: id })
-    if(!delExpense) {
+    if (!delExpense) {
         return next(createCustomError(`No task with id: ${id}`, 404));
     }
     res.status(200).json({ delExpense })
 })
 
+const updateExpense = asyncWrapper(async (req, res) => {
+    const { id } = req.params;
+    const updExpense = await ExpenseSchema.findOneAndUpdate(
+        { _id: id },
+        req.body,
+        {new:true}
+    )
+    res.status(200).json({updExpense})
+})
+
 module.exports = {
     addExpense,
     getExpenses,
-    deleteExpense
+    deleteExpense,
+    updateExpense
 }

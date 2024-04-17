@@ -25,14 +25,28 @@ const getIncomes = asyncWrapper(async (req, res) => {
 const deleteIncome = asyncWrapper(async (req, res) => {
     const { id } = req.params;
     const delIncome = await IncomeSchema.findOneAndDelete({ _id: id })
-    if(!delIncome) {
-        return next(createCustomError(`No task with id: ${id}`, 404));
+    if (!delIncome) {
+        return next(createCustomError(`No income with id: ${id}`, 404));
     }
     res.status(200).json({ delIncome })
+})
+
+const updateIncome = asyncWrapper(async (req, res) => {
+    const { id } = req.params
+    const updIncome = await IncomeSchema.findOneAndUpdate(
+        { _id: id },
+        req.body,
+        { new: true }
+    )
+    if (!updIncome) {
+        return next(createCustomError(`No income with id ${id}`, 404))
+    }
+    res.status(200).json({ updIncome })
 })
 
 module.exports = {
     addIncome,
     getIncomes,
-    deleteIncome
+    deleteIncome,
+    updateIncome
 }
