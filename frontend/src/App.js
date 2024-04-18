@@ -2,6 +2,7 @@ import React from "react"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css"
 import Income from "./components/income/Income"
+import SignUp from "./components/signup/SignUp";
 import Expense from "./components/expense/Expense";
 import { IncomeContext } from "./Context/IncomeContext";
 import Dashboard from "./components/dashboard/Dashboard"
@@ -17,6 +18,7 @@ function App() {
         <IncomeContext.Provider value={{ totalIncome, setTotalIncome }}>
           <BrowserRouter>
             <Routes>
+              <Route exact path="/signup" element={<SignUp/>}/>
               <Route exact path="/" element={<Dashboard />} />
               <Route exact path="/incomes" element={<Income />} />
               <Route exact path="/expenses" element={<Expense />} />
