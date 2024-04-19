@@ -1,13 +1,11 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import Common from "../../common/Common"
-import "./chart.css"
 import ReactApexChart from "react-apexcharts"
+import axiosInstance from "../../helper/axios"
+import "./chart.css"
 
 const Charts = () => {
-
-
-
-  const line = {
+  const [line, setLine] = useState({
     series: [
       {
         name: "Income",
@@ -34,10 +32,9 @@ const Charts = () => {
         curve: "smooth",
       },
       xaxis: {
-        type: "datetime",
-        categories: ["2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022"],
+        type: "text",
+        categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
       },
-      //add it
       grid: {
         show: false,
       },
@@ -53,13 +50,37 @@ const Charts = () => {
         },
       },
     },
+  })
+  const [year, setYear] = useState(0);
+
+  const getData = async () => {
+    const income_response = await axiosInstance.get(`/get-incomes-by-year?year=${year}`)
+
+    const expense_response = await axiosInstance.get(`/get-expenses-by-year?year=${year}`)
+
+    let arrays = {};
+    arrays['Income'] = income_response?.data;
+    arrays['Expense'] = expense_response?.data;
+
+    setLine({
+      ...line,
+      series: line.series.map(item => ({
+        name: item.name,
+        data: arrays[item.name]?.length?arrays[item.name]:[]
+      }))
+    })
   }
+
+  useEffect(() => {
+    getData();
+  }, [year])
 
   return (
     <>
       <section className='charts'>
         <div className='cardBox'>
           <Common title='Total Revenue' />
+          <input type="number" value={year} onChange={(e) => setYear(e.target.value)}/>
           <ReactApexChart
             options={line.options}
             series={line.series}

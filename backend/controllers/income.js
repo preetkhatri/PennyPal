@@ -44,9 +44,11 @@ const updateIncome = asyncWrapper(async (req, res) => {
     res.status(200).json({ updIncome })
 })
 
-const incomeByYear = asyncWrapper(async (req, res) => {
+const getIncomeByMonth = asyncWrapper(async (req, res) => {
     const { year } = req.query;
     console.log(req.query);
+
+    const monthIncomes = new Array(12).fill(0)
 
     const startDate = new Date(year, 0, 1);
     const endDate = new Date(year, 11, 31, 23, 59, 59); 
@@ -59,9 +61,12 @@ const incomeByYear = asyncWrapper(async (req, res) => {
         return res.status(200).json({});
     }
 
-    incomes.sort((a, b) => a.date - b.date);
+    incomes.forEach((income) => {
+        const month = income.date.getMonth()
+        monthIncomes[month] += income.amount
+    })
 
-    res.status(200).json(incomes);
+    res.status(200).json(monthIncomes);
 })
 
 module.exports = {
@@ -69,5 +74,5 @@ module.exports = {
     getIncomes,
     deleteIncome,
     updateIncome,
-    incomeByYear
+    getIncomeByMonth
 }

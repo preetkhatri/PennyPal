@@ -44,12 +44,14 @@ const updateExpense = asyncWrapper(async (req, res) => {
     res.status(200).json({ updExpense })
 })
 
-const getExpenseByYear = asyncWrapper(async (req, res) => {
+const getExpenseByMonth = asyncWrapper(async (req, res) => {
     const { year } = req.query;
     console.log(req.query);
 
+    const monthExpenses = new Array(12).fill(0);
+
     const startDate = new Date(year, 0, 1);
-    const endDate = new Date(year, 1, 31, 23, 59, 59); 
+    const endDate = new Date(year, 11, 31, 23, 59, 59);
 
     const expenses = await ExpenseSchema.find({
         date: { $gte: startDate, $lte: endDate }
@@ -59,7 +61,12 @@ const getExpenseByYear = asyncWrapper(async (req, res) => {
         return res.status(200).json({});
     }
 
-    res.status(200).json(expenses);
+    expenses.forEach((expense)=>{
+        const month = expense.date.getMonth();
+        monthExpenses[month] += expense.amount
+    })
+
+    res.status(200).json(monthExpenses);
 })
 
 module.exports = {
@@ -67,5 +74,5 @@ module.exports = {
     getExpenses,
     deleteExpense,
     updateExpense,
-    getExpenseByYear
+    getExpenseByMonth
 }
