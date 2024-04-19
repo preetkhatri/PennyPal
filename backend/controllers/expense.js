@@ -14,10 +14,14 @@ const addExpense = asyncWrapper(async (req, res) => {
     }
 
     const expenseAdd = await ExpenseSchema.create(expense);
+
+    
     res.status(201).json(expenseAdd);
 })
 
 const getExpenses = asyncWrapper(async (req, res) => {
+
+    console.log("req: ", req.auth_user);
     const expenses = await ExpenseSchema.find().sort({ createdAt: -1 })
     return res.status(200).json(expenses)
 })

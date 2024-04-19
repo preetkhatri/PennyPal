@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
-    username:{
+    username: {
         type: String,
         required: true,
         trim: true,
@@ -14,7 +14,23 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    }
-}, {timestamps: true})
+    },
+    expenses: [
+        {
+            expense_id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "expenses"
+            }
+        }
+    ],
+    incomes: [
+        {
+            income_id: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "incomes"
+            }
+        }
+    ]
+}, { timestamps: true })
 
 module.exports = mongoose.model('User', userSchema)
