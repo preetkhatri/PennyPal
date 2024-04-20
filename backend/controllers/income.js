@@ -73,19 +73,35 @@ const getIncomes = asyncWrapper(async (req, res) => {
 
 const deleteIncome = asyncWrapper(async (req, res) => {
     const { id } = req.params;
-    const delIncome = await IncomeSchema.findOneAndDelete({ _id: id })
-    if (!delIncome) {
-        throw new next(createCustomError(`No income with id: ${id}`, 404));
+    const user_id = req.auth_user.static_id;
+
+
+    const deletedIncome = await User.findOneAndUpdate({
+        _id: user_id
+    }, {
+        "$pull": {
+            "incomes": {
+                income_id: id
+            }
+        }
+    },
+        { new: true })
+
+    if (!deletedIncome) {
+        return res.status(404).json({ message: "User has no such income with id" });
     }
-    res.status(200).json({ delIncome })
+
+    res.status(200).json({ message: "Income deleted successfully", data: deletedIncome.incomes })
 })
 
 const updateIncome = asyncWrapper(async (req, res) => {
     const { id } = req.params
-    const user_details = await User.findOne({_id: req.auth_user.static_id});
+    const user_details = await User.findOne({ _id: req.auth_user.static_id });
+
+    console.log(user_details);
 
     const found = user_details?.incomes.filter(income => (income.income_id.equals(id)))
-    if(!found.length) return res.json({message: "User has no such income with id"})
+    if (!found.length) return res.json({ message: "User has no such income with id" })
     const updIncome = await IncomeSchema.findOneAndUpdate(
         { _id: id },
         req.body,
@@ -98,17 +114,52 @@ const updateIncome = asyncWrapper(async (req, res) => {
 })
 
 const getIncomeByMonth = asyncWrapper(async (req, res) => {
+    const query_arr = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(`${req.auth_user.static_id}`)
+            }
+        },
+        {
+            $unwind: {
+                path: "$incomes",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: "incomes",
+                localField: "incomes.income_id",
+                foreignField: "_id",
+                as: "incomes"
+            }
+        },
+        {
+            $unwind: {
+                path: "$incomes",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $group: {
+                _id: "$_id",
+                incomes: {
+                    $push: "$incomes"
+                }
+            }
+        }
+    ];
+
+    const user_details = await User.aggregate(query_arr);
+    const incomes_arr = user_details[0].incomes
+
     const { year } = req.query;
-    console.log(req.query);
 
     const monthIncomes = new Array(12).fill(0)
 
-    const startDate = new Date(year, 0, 1);
-    const endDate = new Date(year, 11, 31, 23, 59, 59);
-
-    const incomes = await IncomeSchema.find({
-        date: { $gte: startDate, $lte: endDate }
-    }).sort({ date: 1 });
+    const incomes = incomes_arr.filter((income) => {
+        return income.date.getFullYear() === parseInt(year)
+    })
 
     if (incomes.length === 0) {
         return res.status(200).json({});

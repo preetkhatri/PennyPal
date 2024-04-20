@@ -1,6 +1,8 @@
 const ExpenseSchema = require('../models/expenseModel')
 const asyncWrapper = require('../middlewares/async')
+const User = require('../models/userModel')
 const { createCustomError } = require('../errors/custom-error')
+const mongoose = require('mongoose')
 
 const addExpense = asyncWrapper(async (req, res) => {
     const { title, amount, date, category, description } = req.body
@@ -15,28 +17,93 @@ const addExpense = asyncWrapper(async (req, res) => {
 
     const expenseAdd = await ExpenseSchema.create(expense);
 
-    
+    await User.findOneAndUpdate({
+        _id: req.auth_user.static_id
+    }, {
+        "$push": {
+            "expenses": {
+                expense_id: expenseAdd._id
+            }
+        }
+    })
+
+
     res.status(201).json(expenseAdd);
 })
 
 const getExpenses = asyncWrapper(async (req, res) => {
+    const query_arr = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(`${req.auth_user.static_id}`)
+            }
+        },
+        {
+            $unwind: {
+                path: "$expenses",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: "expenses",
+                localField: "expenses.expense_id",
+                foreignField: "_id",
+                as: "expenses"
+            }
+        },
+        {
+            $unwind: {
+                path: "$expenses",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $group: {
+                _id: "$_id",
+                expenses: {
+                    $push: "$expenses"
+                }
+            }
+        }
+    ];
 
-    console.log("req: ", req.auth_user);
-    const expenses = await ExpenseSchema.find().sort({ createdAt: -1 })
-    return res.status(200).json(expenses)
+    const user_details = await User.aggregate(query_arr);
+
+    res.status(200).json({ message: "Expenses fetched successfully", data: user_details[0].expenses })
 })
 
 const deleteExpense = asyncWrapper(async (req, res) => {
     const { id } = req.params;
-    const delExpense = await ExpenseSchema.findOneAndDelete({ _id: id })
-    if (!delExpense) {
-        return next(createCustomError(`No task with id: ${id}`, 404));
+    const user_id = req.auth_user.static_id;
+
+    const deletedExpense = await User.findOneAndUpdate({
+        _id: user_id
+    }, {
+        "$pull": {
+            "expenses": {
+                expense_id: id
+            }
+        }
+    },
+        { new: true })
+
+    if (!deletedExpense) {
+        return res.status(404).json({ message: "User has no such expense with id" });
     }
-    res.status(200).json({ delExpense })
+    
+    res.status(200).json({ message: "Expense deleted successfully", data: deletedExpense.expenses })
 })
 
 const updateExpense = asyncWrapper(async (req, res) => {
     const { id } = req.params;
+    const user_details = await User.findOne({ _id: req.auth_user.static_id });
+
+    console.log(user_details);
+
+    const found = user_details?.expenses.filter(expense => (expense.expense_id.equals(id)))
+    if (!found.length) return res.json({ message: "User has no such income with id" })
+
     const updExpense = await ExpenseSchema.findOneAndUpdate(
         { _id: id },
         req.body,
@@ -49,23 +116,58 @@ const updateExpense = asyncWrapper(async (req, res) => {
 })
 
 const getExpenseByMonth = asyncWrapper(async (req, res) => {
+    const query_arr = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(`${req.auth_user.static_id}`)
+            }
+        },
+        {
+            $unwind: {
+                path: "$expenses",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: "expenses",
+                localField: "expenses.expense_id",
+                foreignField: "_id",
+                as: "expenses"
+            }
+        },
+        {
+            $unwind: {
+                path: "$expenses",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $group: {
+                _id: "$_id",
+                expenses: {
+                    $push: "$expenses"
+                }
+            }
+        }
+    ];
+
+    const user_details = await User.aggregate(query_arr);
+    const expenses_arr = user_details[0].expenses
+
     const { year } = req.query;
-    console.log(req.query);
 
     const monthExpenses = new Array(12).fill(0);
 
-    const startDate = new Date(year, 0, 1);
-    const endDate = new Date(year, 11, 31, 23, 59, 59);
-
-    const expenses = await ExpenseSchema.find({
-        date: { $gte: startDate, $lte: endDate }
-    }).sort({date: 1});
+    const expenses = expenses_arr.filter((expense)=> {
+        return expense.date.getFullYear() === parseInt(year)
+    })
 
     if (expenses.length === 0) {
         return res.status(200).json({});
     }
 
-    expenses.forEach((expense)=>{
+    expenses.forEach((expense) => {
         const month = expense.date.getMonth();
         monthExpenses[month] += expense.amount
     })
