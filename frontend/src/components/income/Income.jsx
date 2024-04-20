@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { IncomeContext } from "../../Context/IncomeContext";
 import "./income.css";
-import axios from "axios"
 import Form from "../form/Form";
 import Lists from "../lists/Lists";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import axiosInstance from "../../helper/axios";
 
 const Income = () => {
     const getMode = () => {
@@ -21,8 +21,8 @@ const Income = () => {
 
     const getAllData = async () => {
         let total = 0;
-        const response = await axios.get("http://localhost:5000/api/v1/get-incomes");
-        const incs = response.data;
+        const response = await axiosInstance.get("http://localhost:5000/api/v1/get-incomes");
+        const incs = response.data.data;
         incs.forEach((key) => {
             total = total + key.amount;
         })

@@ -1,8 +1,8 @@
 import React from "react";
-import axios from "axios";
 import "./form.css"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import axiosInstance from "../../helper/axios";
 
 export default function Form() {
 
@@ -22,7 +22,7 @@ export default function Form() {
             category: category
         };
         console.log(data);
-        axios.post("http://localhost:5000/api/v1/add-income", data)
+        axiosInstance.post("http://localhost:5000/api/v1/add-income", data)
             .then((res) => {
                 console.log("sent");
             })

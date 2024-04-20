@@ -11,7 +11,7 @@ const addExpense = asyncWrapper(async (req, res) => {
     if (!title || !amount || !category || !description || !date) {
         (createCustomError(`All fields are required`, 400))
     }
-    if (amount < 0 || !amount === 'Number') {
+    if (amount < 0 || !typeof(amount) === Number) {
         (createCustomError(`Amount must be positive`, 400))
     }
 

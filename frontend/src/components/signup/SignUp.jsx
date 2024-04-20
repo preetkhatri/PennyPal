@@ -10,25 +10,47 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axiosInstance from "../../helper/axios"
+import {useNavigate} from "react-router-dom"
 
 
 const defaultTheme = createTheme();
 
 export default function SignUp() {
 
-  const [signUpData, setSignUpData] = React.useState({
+  const [userData, setUserData] = React.useState({
     username: "",
     email: "",
     password: ""
   });
 
+  const navigate = useNavigate()
+
   function handleChange(event) {
-    setSignUpData((prevdata) => {
+    setUserData((prevdata) => {
       return {
         ...prevdata,
         [event.target.name]: (event.target.value)
       };
     });
+  }
+
+  const handleSignUp = async() => {
+    try {
+      const response = await axiosInstance.post('/signup', {
+        username: userData.username,
+        email: userData.email,
+        password: userData.password
+      });
+      
+      const token = response.data.data;
+  
+      window.localStorage.setItem("auth-token", token);
+
+      navigate("/")
+    } catch (error) {
+      console.log("Error: ", error);
+    }
   }
 
   return (
@@ -49,7 +71,7 @@ export default function SignUp() {
           <Typography component="h1" variant="h5">
             Sign up
           </Typography>
-          <Box component="form" noValidate onSubmit={(e) => { console.log(signUpData); e.preventDefault(); }} sx={{ mt: 3 }}>
+          <Box component="form" noValidate onSubmit={(e) => { console.log(userData); e.preventDefault(); }} sx={{ mt: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -59,7 +81,7 @@ export default function SignUp() {
                   label="Username"
                   name="username"
                   onChange={handleChange}
-                  value={signUpData.username}
+                  value={userData.username}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -70,7 +92,7 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   onChange={handleChange}
-                  value={signUpData.email}
+                  value={userData.email}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -82,7 +104,7 @@ export default function SignUp() {
                   type="password"
                   id="password"
                   onChange={handleChange}
-                  value={signUpData.password}
+                  value={userData.password}
                 />
               </Grid>
             </Grid>
@@ -91,13 +113,14 @@ export default function SignUp() {
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              onClick={handleSignUp}
             >
               Sign Up
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
                 <Link href="#" variant="body2">
-                  Already have an account? Sign in
+                  Already have an account? Log in
                 </Link>
               </Grid>
             </Grid>

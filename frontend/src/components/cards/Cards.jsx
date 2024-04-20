@@ -1,17 +1,13 @@
 import React, { useContext, useEffect } from "react"
 import "./cards.css"
-import axios from "axios";
 import Common from "../../common/Common"
 import { IncomeContext } from "../../Context/IncomeContext";
 import { ExpenseContext } from "../../Context/ExpenseContext";
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import axiosInstance from "../../helper/axios";
 
 
 const Cards = () => {
-
-  const { totalExpense, useTotalExpense } = useContext(ExpenseContext);
-  const { totalIncome, useTotalIncome } = useContext(IncomeContext);
-
 
   const [inc, setInc] = React.useState(0);
   const [exp, setExp] = React.useState();
@@ -19,9 +15,9 @@ const Cards = () => {
   useEffect(() => {
     const fetchIncomes = async () => {
       let total = 0;
-      const incResp = await axios.get("http://localhost:5000/api/v1/get-incomes");
-      const inc = incResp.data;
-      inc.forEach((key) => {
+      const incResp = await axiosInstance.get("http://localhost:5000/api/v1/get-incomes");
+      const incs = incResp.data.data;
+      incs.forEach((key) => {
         total = total + key.amount;
       })
       setInc(total);
@@ -29,9 +25,9 @@ const Cards = () => {
 
     const fecthExpenses = async () => {
       let totalExp = 0;
-      const expResp = await axios.get("http://localhost:5000/api/v1/get-expenses");
-      const exp = expResp.data;
-      exp.forEach((key)=>{
+      const expResp = await axiosInstance.get("http://localhost:5000/api/v1/get-expenses");
+      const exps = expResp.data.data;
+      exps.forEach((key)=>{
         totalExp = totalExp + key.amount;
       })
       setExp(totalExp);
@@ -40,6 +36,11 @@ const Cards = () => {
     fecthExpenses();
     fetchIncomes();
   }, []);
+
+  useEffect(()=>{
+    console.log("Income", inc);
+    console.log("Expense", exp);
+  })
 
   return (
     <>

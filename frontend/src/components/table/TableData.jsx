@@ -1,6 +1,5 @@
 import React, { useEffect } from "react"
 import "./Table.css"
-import axios from "axios"
 import Common from "../../common/Common"
 import "../users/users.css"
 import Table from "@mui/material/Table"
@@ -10,6 +9,7 @@ import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import Paper from "@mui/material/Paper"
+import axiosInstance from "../../helper/axios"
 
 
 
@@ -20,11 +20,11 @@ const TableData = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const expenseResponse = await axios.get("http://localhost:5000/api/v1/get-expenses");
-        const expenses = expenseResponse.data.map(e => ({ ...e, type: "expense" }));
+        const expenseResponse = await axiosInstance.get("http://localhost:5000/api/v1/get-expenses");
+        const expenses = expenseResponse.data.data.map(e => ({ ...e, type: "expense" }));
 
-        const incomeResponse = await axios.get("http://localhost:5000/api/v1/get-incomes");
-        const incomes = incomeResponse.data.map(e => ({ ...e, type: "income" }));
+        const incomeResponse = await axiosInstance.get("http://localhost:5000/api/v1/get-incomes");
+        const incomes = incomeResponse.data.data.map(e => ({ ...e, type: "income" }));
 
         const allTransactions = [...expenses, ...incomes];
 

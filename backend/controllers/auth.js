@@ -2,10 +2,16 @@ const asyncWrapper = require("../middlewares/async");
 const User = require('../models/userModel')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const authenticateUser = require('../middlewares/auth')
+const authenticateUser = require('../middlewares/auth');
+const { createCustomError } = require("../errors/custom-error");
 
 const signUp = asyncWrapper(async (req, res) => {
     const { username, email, password: plaintextpassword } = req.body
+
+    const user_exist = await User.findOne({email: email});
+
+    if(user_exist) return res.status(403).json({message: "User Already Exists"});
+
     const password = await bcrypt.hash(plaintextpassword, 10)
     const user = await User.create({ username, email, password })
 
@@ -21,7 +27,8 @@ const signUp = asyncWrapper(async (req, res) => {
 const login = asyncWrapper(async (req, res) => {
     const {username, password} = req.body
     const user = await User.findOne({username: username})
-    const validatePassword = await bcrypt.compare(password, user?.password)
+    if(!user) return res.status(404).json({message: "No Such User Exists"});
+    const validatePassword = bcrypt.compare(password, user.password)
     if(!validatePassword) {
         return res.status(404).json({message: "Invalid credentials"})
     }

@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
 import { ExpenseContext } from "../../Context/ExpenseContext";
 import "./Expense.css"
-import axios from "axios";
 import Header from "../header/Header";
 import Footer from "../footer/Footer";
 import ExpenseForm from "../ExpensesForm/ExpenseForm"
 import ExpenseList from "../ExpensesLists/ExpenseList"
+import axiosInstance from "../../helper/axios";
 
 const Expense = () => {
     const getMode = () => {
@@ -20,8 +20,8 @@ const Expense = () => {
 
     const getAllData = async () => {
         let total = 0;
-        const response = await axios.get("http://localhost:5000/api/v1/get-expenses");
-        const exps = response.data;
+        const response = await axiosInstance.get("http://localhost:5000/api/v1/get-expenses");
+        const exps = response.data.data;
         exps.forEach((key) => {
             total = total + key.amount;
         })

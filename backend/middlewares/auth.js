@@ -5,6 +5,7 @@ const asyncWrapper = require('../middlewares/async')
 
 const authenticateUser = asyncWrapper(async (req, res, next) => {
     const token = (req.headers.authorization.split("Bearer "))[1];
+    if(!token) return res.json({message: "Token not present"});
     const user_data = jwt.verify(token, process.env.JWT_SECRET)
     const user = await User.findOne(
         {_id: user_data.id},

@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import axiosInstance from '../../helper/axios';
+import {useNavigate} from "react-router-dom"
 
 
 const defaultTheme = createTheme();
@@ -29,6 +31,22 @@ export default function Login() {
                 [event.target.name]: event.target.value
             };
         });
+    }
+
+    const navigate = useNavigate()
+
+    const handleLogin = async () => {
+        try {
+           const response = await axiosInstance.post('/login', {
+            username: loginData.username,
+            password: loginData.password
+           }) 
+           const token = response.data.data
+           window.localStorage.setItem("auth-token", token);
+           navigate("/")
+        } catch (error) {
+            console.log("Error: ", error);
+        }
     }
 
     return (
@@ -70,13 +88,14 @@ export default function Login() {
                             type="password"
                             id="password"
                             onChange={handleChange}
-                            value={loginData.password}                            
+                            value={loginData.password}
                         />
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
+                            onClick={handleLogin}
                         >
                             Sign In
                         </Button>
