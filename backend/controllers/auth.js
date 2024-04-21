@@ -28,7 +28,7 @@ const login = asyncWrapper(async (req, res) => {
     const {username, password} = req.body
     const user = await User.findOne({username: username})
     if(!user) return res.status(404).json({message: "No Such User Exists"});
-    const validatePassword = bcrypt.compare(password, user.password)
+    const validatePassword = await bcrypt.compare(password, user.password)
     if(!validatePassword) {
         return res.status(404).json({message: "Invalid credentials"})
     }

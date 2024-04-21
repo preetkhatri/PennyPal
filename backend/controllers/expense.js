@@ -155,6 +155,7 @@ const getExpenseByMonth = asyncWrapper(async (req, res) => {
     const user_details = await User.aggregate(query_arr);
     const expenses_arr = user_details[0].expenses
 
+
     const { year } = req.query;
 
     const monthExpenses = new Array(12).fill(0);
@@ -175,10 +176,63 @@ const getExpenseByMonth = asyncWrapper(async (req, res) => {
     res.status(200).json(monthExpenses);
 })
 
+const expenseYears = asyncWrapper(async (req,res)=> {
+    const query_arr = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(`${req.auth_user.static_id}`)
+            }
+        },
+        {
+            $unwind: {
+                path: "$expenses",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: "expenses",
+                localField: "expenses.expense_id",
+                foreignField: "_id",
+                as: "expenses"
+            }
+        },
+        {
+            $unwind: {
+                path: "$expenses",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $group: {
+                _id: "$_id",
+                expenses: {
+                    $push: "$expenses"
+                }
+            }
+        }
+    ];
+
+    const user_details = await User.aggregate(query_arr);
+    const expenses_arr = user_details[0].expenses
+
+    const yearsSet = new Set();
+    expenses_arr.forEach((expense)=>{
+        const year = expense.date.getFullYear();
+        yearsSet.add(year);
+    })
+
+    const yearsArray = Array.from(yearsSet).sort();
+
+    res.status(200).json({data: yearsArray})
+
+})
+
 module.exports = {
     addExpense,
     getExpenses,
     deleteExpense,
     updateExpense,
-    getExpenseByMonth
+    getExpenseByMonth,
+    expenseYears
 }

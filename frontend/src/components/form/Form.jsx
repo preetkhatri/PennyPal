@@ -68,7 +68,7 @@ export default function Form() {
                                 type="text"
                                 name="title"
                                 value={formdata.title}
-                                placeholder="Salary Title"
+                                placeholder="Income Title"
                                 onChange={handleChange}
                                 required
                             />
@@ -78,7 +78,7 @@ export default function Form() {
                                 type="number"
                                 name="amount"
                                 value={formdata.amount}
-                                placeholder="Salary Amount"
+                                placeholder="Income Amount"
                                 onChange={handleChange}
                                 required
                             />

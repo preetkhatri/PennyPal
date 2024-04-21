@@ -173,10 +173,62 @@ const getIncomeByMonth = asyncWrapper(async (req, res) => {
     res.status(200).json(monthIncomes);
 })
 
+const incomeYears = asyncWrapper(async (req, res) => {
+    const query_arr = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(`${req.auth_user.static_id}`)
+            }
+        },
+        {
+            $unwind: {
+                path: "$incomes",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: "incomes",
+                localField: "incomes.income_id",
+                foreignField: "_id",
+                as: "incomes"
+            }
+        },
+        {
+            $unwind: {
+                path: "$incomes",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $group: {
+                _id: "$_id",
+                incomes: {
+                    $push: "$incomes"
+                }
+            }
+        }
+    ];
+
+    const user_details = await User.aggregate(query_arr);
+    const incomes_arr = user_details[0].incomes
+
+    const yearsSet = new Set();
+    incomes_arr.forEach((income)=>{
+        const year = income.date.getFullYear();
+        yearsSet.add(year);
+    })
+
+    const yearsArray = Array.from(yearsSet).sort();
+
+    res.status(200).json({data: yearsArray})
+})
+
 module.exports = {
     addIncome,
     getIncomes,
     deleteIncome,
     updateIncome,
-    getIncomeByMonth
+    getIncomeByMonth,
+    incomeYears
 }

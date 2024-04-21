@@ -69,7 +69,7 @@ export default function ExpenseForm() {
                                 type="text"
                                 name="title"
                                 value={formdata.title}
-                                placeholder="Salary Title"
+                                placeholder="Expense Title"
                                 onChange={handleChange}
                                 required
                             />
@@ -79,7 +79,7 @@ export default function ExpenseForm() {
                                 type="number"
                                 name="amount"
                                 value={formdata.amount}
-                                placeholder="Salary Amount"
+                                placeholder="Expense Amount"
                                 onChange={handleChange}
                                 required
                             />
