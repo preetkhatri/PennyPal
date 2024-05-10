@@ -4,7 +4,9 @@ import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDown
 import MaterialUISwitch from "../../MUI/MaterialUISwitch";
 import axiosInstance from "../../helper/axios";
 import LogoutIcon from '@mui/icons-material/Logout';
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import logo from "./test.jpg"
+import "./head.css"
 
 const Head = ({ dark, setMode }) => {
 
@@ -25,7 +27,7 @@ const Head = ({ dark, setMode }) => {
   const handleLogOut = async () => {
     try {
       window.localStorage.removeItem("auth-token")
-      navigate("/login")
+      navigate("/")
     } catch (error) {
       console.log("Error: ", error);
     }
@@ -44,9 +46,9 @@ const Head = ({ dark, setMode }) => {
       <section className='head'>
         <div className='container flexSB'>
           <div className='left'>
-            {/* Logo add krna hai baadme */}
             <div className='logo'>
-              <img src='./test.jpg' alt='!found' />
+              {/* <img src={logo} alt ='!found' id="logo" /> */}
+              <h3>PennyPal</h3>
             </div>
           </div>
           <div className='right flexCenter'>

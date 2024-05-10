@@ -19,11 +19,11 @@ function App() {
         <IncomeContext.Provider value={{ totalIncome, setTotalIncome }}>
           <BrowserRouter>
             <Routes>
-              <Route exact path="/" element={<Dashboard />} />
+              <Route exact path="/dashboard" element={<Dashboard />} />
               <Route exact path="/incomes" element={<Income />} />
               <Route exact path="/expenses" element={<Expense />} />
               <Route exact path="/signup" element={<SignUp/>}/>
-              <Route exact path="/login" element={<Login/>}/>
+              <Route exact path="/" element={<Login/>}/>
             </Routes>
           </BrowserRouter>
         </IncomeContext.Provider>

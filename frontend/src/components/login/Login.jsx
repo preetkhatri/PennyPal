@@ -11,10 +11,13 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axiosInstance from '../../helper/axios';
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const defaultTheme = createTheme();
+
 
 export default function Login() {
     const [loginData, setLoginData] = React.useState({
@@ -35,14 +38,15 @@ export default function Login() {
 
     const handleLogin = async () => {
         try {
-           const response = await axiosInstance.post('/login', {
-            username: loginData.username,
-            password: loginData.password
-           }) 
-           const token = response.data.data
-           window.localStorage.setItem("auth-token", token);
-           navigate("/")
+            const response = await axiosInstance.post('/login', {
+                username: loginData.username,
+                password: loginData.password
+            })
+            const token = response.data.data
+            window.localStorage.setItem("auth-token", token);
+            navigate("/dashboard")
         } catch (error) {
+            toast.error("Bad User Credentials");
             console.log("Error: ", error);
         }
     }
@@ -112,6 +116,7 @@ export default function Login() {
                     </Box>
                 </Box>
             </Container>
+            <ToastContainer />
         </ThemeProvider>
     );
 }

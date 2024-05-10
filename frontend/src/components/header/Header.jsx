@@ -26,9 +26,9 @@ const Header = ({ dark, setMode }) => {
         <header>
           <div className='container'>
             <ul className={mobile ? "navMenu-list" : "link"} onClick={() => setMobile(false)}>
-              <li onClick={() => handleLinkClick("/")}>
-                <Link to="/">
-                  <DashboardOutlinedIcon className={`navIcon ${location.pathname === '/' ? "active" : ""}`} />
+              <li onClick={() => handleLinkClick("/dashboard")}>
+                <Link to="/dashboard">
+                  <DashboardOutlinedIcon className={`navIcon ${location.pathname === '/dashboard' ? "active" : ""}`} />
                   Dashboard
                 </Link>
               </li>
@@ -44,10 +44,10 @@ const Header = ({ dark, setMode }) => {
                   Expenses
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <CurrencyExchangeIcon className='navIcon' />
                 <a href='/'>Transactions</a>
-              </li>
+              </li> */}
             </ul>
             <button className='toggle' onClick={() => setMobile(!mobile)}>
               {mobile ? <CloseIcon /> : <MenuIcon />}

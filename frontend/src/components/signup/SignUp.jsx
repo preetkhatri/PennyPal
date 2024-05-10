@@ -11,7 +11,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axiosInstance from "../../helper/axios"
-import {useNavigate} from "react-router-dom"
+import { useNavigate } from "react-router-dom"
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 const defaultTheme = createTheme();
@@ -35,20 +37,20 @@ export default function SignUp() {
     });
   }
 
-  const handleSignUp = async() => {
+  const handleSignUp = async () => {
     try {
       const response = await axiosInstance.post('/signup', {
         username: userData.username,
         email: userData.email,
         password: userData.password
       });
-      
-      const token = response.data.data;
-  
-      window.localStorage.setItem("auth-token", token);
 
-      navigate("/")
+      const token = response.data.data;
+
+      window.localStorage.setItem("auth-token", token);
+      navigate("/dashboard")
     } catch (error) {
+      toast.error("User already exists");
       console.log("Error: ", error);
     }
   }
@@ -119,7 +121,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="/login" variant="body2">
+                <Link href="/" variant="body2">
                   Already have an account? Log in
                 </Link>
               </Grid>
@@ -127,6 +129,7 @@ export default function SignUp() {
           </Box>
         </Box>
       </Container>
+      <ToastContainer />
     </ThemeProvider>
   );
 }
